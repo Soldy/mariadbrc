@@ -2,6 +2,22 @@ const mariadb = require('mariadb');
 
 
 exports.mariadbrc = function(){
+    this.rubishCleaner(varArray){ // only temp. sloution
+        var map = {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            "'":"&apos;",
+            '"':"&quot;"
+        };
+        for (let i in varArray)
+            varArray[i] = varArray[i].toString().replace(
+                /[&<>"']/g, 
+                function(m) { 
+                   return map[m]; 
+            });
+        return varArray;
+    }
     this.setConfig = function (inputConfig){
         for (let i in inputConfig)
              if (typeof config[i] !== "undefined")
@@ -19,6 +35,7 @@ exports.mariadbrc = function(){
         return await this.qf(func, varArray);
     }
     this.qf = async function(func, varArray){
+        varArray = this.rubishCleaner(varArray);
         return await conection.query(
             "SELECT `"+func+"`('"+varArray+"') AS `id`;"
         );
@@ -27,6 +44,7 @@ exports.mariadbrc = function(){
         return await this.qp(procedure, varArray);
     }
     this.qp = async function(procedure, varArray){
+        varArray = this.rubishCleaner(varArray);
         return await conection.query(
             "CALL `"+procedure+"`('"+varArray+"') AS `id`;"
         );
