@@ -55,10 +55,10 @@ exports.mariadbrc = function(){
         return false;
     }
     let config = {
-        host            : '127.0.0.1',
-        user            : 'root',
-        password        : '123456',
-        database        : 'mails',
+        host            : 'localhost',
+        user            : 'soldy',
+        password        : 'asdasd',
+        database        : 'topSecret',
         connectionLimit : 5
     }
 
