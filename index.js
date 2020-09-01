@@ -24,7 +24,7 @@ exports.mariadbrc = function(){
         for (let i in varArray){
             if(s>0)
                 out+=", "
-            out += "'"varArray[i]+"'";
+            out += "'"+varArray[i]+"'";
             s++;
         }
         return out;
@@ -48,7 +48,7 @@ exports.mariadbrc = function(){
     }
     this.qf = async function(func, varArray){
         varArray = this.rubishCleaner(varArray);
-        return await conection.query(
+        return await connection.query(
             "SELECT `"+func+"`("+this.prepare(varArray)+") AS `id`;"
         );
     }
@@ -57,12 +57,12 @@ exports.mariadbrc = function(){
     }
     this.qp = async function(procedure, varArray){
         varArray = this.rubishCleaner(varArray);
-        return await conection.query(
+        return await connection.query(
             "CALL `"+procedure+"`("+this.prepare(varArray)+");"
         );
     }
     let status      = 0;
-    let connetction = "";
+    let connection = "";
     let pool = async function(){
         return false;
     }
