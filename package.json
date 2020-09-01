@@ -1,0 +1,22 @@
+{
+  "name": "mariadbrc",
+  "version": "0.4.1",
+  "description": "mariadbrc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soldy/mariadbrc.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Soldy/mariadbrc/issues"
+  },
+  "homepage": "https://github.com/Soldy/mariadbrc#readme",
+  "dependencies": {
+    "mariadb": "^2.4.2"
+  }
+}
