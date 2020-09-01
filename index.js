@@ -2,34 +2,6 @@ const mariadb = require('mariadb');
 
 
 exports.mariadbrc = function(){
-    this.rubishCleaner=function(varArray){ // only temp. sloution
-        var map = {
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            "'":"&apos;",
-            '"':"&quot;"
-        };
-        for (let i in varArray)
-            varArray[i] = varArray[i].toString().replace(
-                /[&<>"']/g, 
-                function(m) { 
-                   return map[m]; 
-            });
-        return varArray;
-    }
-    this.prepare = function (varArray){
-        let out = "";
-        let s = 0;
-        for (let i in varArray){
-            if(s>0)
-                out+=", "
-            out += "'"+varArray[i]+"'";
-            s++;
-        }
-        return out;
-
-    }
     this.setConfig = function (inputConfig){
         for (let i in inputConfig)
              if (typeof config[i] !== "undefined")
@@ -47,19 +19,47 @@ exports.mariadbrc = function(){
         return await this.qf(func, varArray);
     }
     this.qf = async function(func, varArray){
-        varArray = this.rubishCleaner(varArray);
+        varArray = rubishCleaner(varArray);
         return await connection.query(
-            "SELECT `"+func+"`("+this.prepare(varArray)+") AS `id`;"
+            "SELECT `"+func+"`("+prepare(varArray)+") AS `id`;"
         );
     }
     this.procedureQuery= async function(procedure, varArray){
         return await this.qp(procedure, varArray);
     }
     this.qp = async function(procedure, varArray){
-        varArray = this.rubishCleaner(varArray);
+        varArray = rubishCleaner(varArray);
         return await connection.query(
-            "CALL `"+procedure+"`("+this.prepare(varArray)+");"
+            "CALL `"+procedure+"`("+prepare(varArray)+");"
         );
+    }
+    let rubishCleaner=function(varArray){ // only temp. sloution
+        var map = {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            "'":"&apos;",
+            '"':"&quot;"
+        };
+        for (let i in varArray)
+            varArray[i] = varArray[i].toString().replace(
+                /[&<>"']/g, 
+                function(m) { 
+                   return map[m]; 
+            });
+        return varArray;
+    }
+    let prepare = function (varArray){
+        let out = "";
+        let s = 0;
+        for (let i in varArray){
+            if(s>0)
+                out+=", "
+            out += "'"+varArray[i]+"'";
+            s++;
+        }
+        return out;
+
     }
     let status      = 0;
     let connection = "";
