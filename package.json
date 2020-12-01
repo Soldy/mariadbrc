@@ -1,6 +1,6 @@
 {
   "name": "mariadbrc",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "mariadbrc",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/Soldy/mariadbrc#readme",
   "dependencies": {
-    "mariadb": "^2.4.2"
+    "mariadb": "^2.4.2",
+  "version": "0.9.9-beta6"
   },
   "devDependencies": {
     "eslint": "^7.8.0",
