@@ -1,15 +1,23 @@
+
+'use strict';
 const mariadb = require('mariadb');
+const setupBase = (require('setuprc')).setupBase;
 
 
-exports.mariadbrc = function(){
-    this.setConfig = function (inputConfig){
-        for (let i in inputConfig)
-             if (typeof config[i] !== "undefined")
-                 config[i] = inputConfig[i];
+exports.mariadbrc = function(settings){
+    this.setConfig = function (settings){
+        if(typeof settings !== 'undefined')
+            setup.setup(settings);
         return true;
     }
     this.connect=async function(){
-         pool = await mariadb.createPool(config);
+         pool = await mariadb.createPool({
+             host            : setup.get('host')+':'+setup.get('port').
+             user            : setup.get('user'),
+             password        : setup.get('password'),
+             database        : setup.get('database'),
+             connectionLimit : 5
+         });
          return connection = await pool.getConnection();
     }
     this.disconnect= async function(){
@@ -68,11 +76,39 @@ exports.mariadbrc = function(){
     }
     let config = {
         host            : 'localhost',
-        user            : 'soldy',
+        user            : 'Soldy',
         password        : 'asdasd',
         database        : 'topSecret',
         connectionLimit : 5
     }
 
+    /*
+     * setup  helper
+     * @private
+     */
+    let setup = new setupBase({
+        'host':{
+            'type'    : 'string',
+            'default' : 'localhost'
+        },
+        'user':{
+            'type'    : 'string',
+            'default' : 'testUser'
+        },
+        'password':{
+            'type'    : 'string',
+            'default' : 'testPass'
+        },
+        'database':{
+            'type'    : 'string',
+            'default' : 'testiDB'
+        },
+        'port':{
+            'type'    : 'eger',
+            'default' : 3306
+        }
+    });
+    if(typeof settings !== 'undefined')
+        setup.setup(settings);
 }
 
