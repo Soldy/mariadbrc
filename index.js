@@ -1,92 +1,96 @@
-
+/*
+ *  @Soldy\mariadbrc\2021.02.08\GPL3 ;
+ */
 'use strict';
 const mariadb = require('mariadb');
 const setupBase = (require('setuprc')).setupBase;
 
 
+/*
+ * @param {object} 
+ * @prototype
+ */
 exports.mariadbrc = function(settings){
+    /*
+     * @param {object} settings
+     * @public
+     * @return {boolean}
+     */
     this.setConfig = function (settings){
-        if(typeof settings !== 'undefined')
-            setup.setup(settings);
-        return true;
-    }
+        return setup.setup(settings);
+    };
+    /*
+     * @public
+     * @return {object}
+     */
     this.connect=async function(){
-         pool = await mariadb.createPool({
-             host            : setup.get('host')+':'+setup.get('port').
-             user            : setup.get('user'),
-             password        : setup.get('password'),
-             database        : setup.get('database'),
-             connectionLimit : 5
-         });
-         return connection = await pool.getConnection();
-    }
+        return await connect();
+    };
+    /*
+     * @public
+     * @return {boolean}
+     */
     this.disconnect= async function(){
 
-    },
+    };
+    /*
+     * @param {string}
+     * @param {array}
+     * @public
+     * @return {object}
+     */
     this.functionQuery= async function(func, varArray){
         return await this.qf(func, varArray);
-    }
+    };
+    /*
+     * @param {string}
+     * @param {array}
+     * @public
+     * @return {object}
+     */
     this.qf = async function(func, varArray){
         varArray = rubishCleaner(varArray);
         return await connection.query(
-            "SELECT `"+func+"`("+prepare(varArray)+") AS `id`;"
+            'SELECT `'+func+'`('+prepare(varArray)+') AS `id`;'
         );
-    }
+    };
+    /*
+     * @param {string}
+     * @param {array}
+     * @public
+     * @return {array}
+     */
     this.procedureQuery= async function(procedure, varArray){
         return await this.qp(procedure, varArray);
-    }
+    };
+    /*
+     * @param {string}
+     * @param {array}
+     * @public
+     * @return {arrayt}
+     */
     this.qp = async function(procedure, varArray){
         varArray = rubishCleaner(varArray);
         return await connection.query(
-            "CALL `"+procedure+"`("+prepare(varArray)+");"
+            'CALL `'+procedure+'`('+prepare(varArray)+');'
         );
-    }
-    let rubishCleaner=function(varArray){ // only temp. sloution
-        var map = {
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            "'":"&apos;",
-            '"':"&quot;"
-        };
-        for (let i in varArray)
-            varArray[i] = varArray[i].toString().replace(
-                /[&<>"']/g, 
-                function(m) { 
-                   return map[m]; 
-            });
-        return varArray;
-    }
-    let prepare = function (varArray){
-        let out = "";
-        let s = 0;
-        for (let i in varArray){
-            if(s>0)
-                out+=", "
-            out += "'"+varArray[i]+"'";
-            s++;
-        }
-        return out;
-
-    }
-    let status      = 0;
-    let connection = "";
+    };
+    /*
+     * @private
+     * @var {{}}
+     */
+    let connection = '';
+    /*
+     * @private
+     */
     let pool = async function(){
         return false;
-    }
-    let config = {
-        host            : 'localhost',
-        user            : 'Soldy',
-        password        : 'asdasd',
-        database        : 'topSecret',
-        connectionLimit : 5
-    }
-
+    };
     /*
      * setup  helper
      * @private
      */
-    let setup = new setupBase({
+    const setup = new setupBase({
         'host':{
             'type'    : 'string',
             'default' : 'localhost'
@@ -108,7 +112,72 @@ exports.mariadbrc = function(settings){
             'default' : 3306
         }
     });
-    if(typeof settings !== 'undefined')
+    /*
+     * @private
+     * @return {object}
+     */
+    const connect=async function(){
+        pool = await mariadb.createPool({
+            host            : setup.get(
+                'host')+':'+setup.get('port'
+            ),
+            user            : setup.get('user'),
+            password        : setup.get('password'),
+            database        : setup.get('database'),
+            connectionLimit : 5
+        });
+        return connection = await pool.getConnection();
+    };
+    /*
+     * @param {array} 
+     * @private
+     * @return {array}
+     */
+    const rubishCleaner=function(varArray){ // only temp. sloution
+        let map = {
+            '&':'&amp;',
+            '<':'&lt;',
+            '>':'&gt;',
+            '\'':'&apos;',
+            '"':'&quot;'
+        };
+        for (let i in varArray)
+            varArray[i] = varArray[i].toString().replace(
+                /[&<>"']/g, 
+                function(m) { 
+                    return map[m]; 
+                });
+        return varArray;
+    };
+    /*
+     * @param {object} 
+     * @private
+     * @return {string}
+     */
+    const prepare = function (varArray){
+        let out = '';
+        let s = 0;
+        for (let i in varArray){
+            if(s>0)
+                out+=', ';
+            out += '\''+varArray[i]+'\'';
+            s++;
+        }
+        return out;
+
+    };
+    /*
+     * @param {object} settings
+     * @private
+     * @return {boolean}
+     */
+    const setConfig = function (settings){
+        if(typeof settings === 'undefined')
+            return false;
         setup.setup(settings);
-}
+        return true;
+    };
+    // constructor
+    setConfig(settings);
+};
 
